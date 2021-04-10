@@ -1,2 +1,11 @@
 @import "./assets/settings";
 @import "./assets/wrapper";
+@import "./assets/buttons";
+@import "./assets/screen";
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@400;600;700&display=swap');
+.App {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
