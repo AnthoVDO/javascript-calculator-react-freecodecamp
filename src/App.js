@@ -30,9 +30,14 @@ function App() {
 
   const [tempScreen, setTempScreen] = useState("");
   const [result, setResult] = useState('0');
-  const checkSign = /\/|\+|\-|x/g;
-  const checkEqual = /\=/g;
-  const checkDecimal = /\./g;
+  const checkSign = /\/|\+|-|x/g;
+  const checkEqual = /=/g;
+  const checkDecimal = /^\./g;
+  const checkClear = /AC/;
+  const checkOpenParenthesis = /^(0\()/g;
+  const checkStartZeroThenNumber = /^0[0-9]/g;
+  const checkStartDoubleZero = /^0{2}/g;
+  const checkMultiplySign = /x/g;
 
   const clear = () => {
     setTempScreen("");
@@ -44,7 +49,11 @@ function App() {
   }
 
   const equation = (e) => {
-    console.log(e)
+    
+  }
+
+  const number = (e) => {
+
   }
 
 
@@ -52,18 +61,31 @@ function App() {
   const handleClick = (e) => {
     
     let numberTyped = e.currentTarget.dataset.touche;
-    //console.log(numberTyped);
+    console.log(numberTyped)
+    let stringToTransform = tempScreen + numberTyped;
+    stringToTransform = stringToTransform.replace(checkStartDoubleZero, "0").replace(checkStartZeroThenNumber, numberTyped).replace(checkDecimal, "0.").replace(checkOpenParenthesis, "(").replace(checkMultiplySign, "*");
+
+
+     
+
     
-    if(numberTyped === "AC"){
+    if(Array.isArray(numberTyped.match(checkClear))){
       return clear();
     }else if(
-      numberTyped === "/" || "x" || "+" || "-"
+      Array.isArray(numberTyped.match(checkSign))
     ){
-      return equation (numberTyped);
+      
+    }else if(Array.isArray(numberTyped.match(checkEqual))){
+      return equal(numberTyped)
     }else{
-      setTempScreen(tempScreen+numberTyped);
-      setResult(result+numberTyped);
+      
     }
+    
+    
+    setTempScreen(stringToTransform);
+    return  setResult(result+numberTyped);
+    
+    
     
   }
 
