@@ -29,61 +29,139 @@ function App() {
   
 
   const [tempScreen, setTempScreen] = useState("");
-  const [result, setResult] = useState('0');
-  const checkSign = /\/|\+|-|x/g;
+  const [result, setResult] = useState("0");
+  const [elementBefore, setElementBefore] = useState('');
+
+  const checkSignWithoutMinus = /\/|\+|x|X|\*/g;
+  const checkSignToEquation = /\/|\+|-|x|X|\*|([\d]\()|(\)[\d])/g;
+  const checkEndSign = /(\/|\+|x|X|\*){2}/g;
+  const checkDoubleMinus = /--/g;
+  const checkDoubleDecimal = /\.\./g;
+
   const checkEqual = /=/g;
   const checkDecimal = /^\./g;
   const checkClear = /AC/;
   const checkOpenParenthesis = /^(0\()/g;
-  const checkStartZeroThenNumber = /^0[0-9]/g;
+  const checkStartZeroThenNumber = /^0[\d]/g;
   const checkStartDoubleZero = /^0{2}/g;
   const checkMultiplySign = /x/g;
+  const checkBeforeOpenParenthesis = /[\d](\()/g;
+  const checkAfterCloseParenthesis = /(\))[\d]/g;
+  const checkDoubleParenthesis = /(\(){2}|(\)){2}/g;
+  const checkMinusBefore = /\+|x|X|\*|\//g;
 
   const clear = () => {
     setTempScreen("");
     setResult("0");
+    setElementBefore("");
   }
 
   const equal = (e) => {
-
+    let number = eval(tempScreen);
+    setResult(number.toString());
+    setElementBefore("=");
+    return setTempScreen(tempScreen+'='+number);
   }
 
   const equation = (e) => {
-    
+    console.log("equation function");
+    let number = e.replace(checkMultiplySign, "*");
+    if(elementBefore === "("){
+      return setResult("("+number);
+    }
+    return setResult(number);
   }
 
-  const number = (e) => {
-
-  }
+  
 
 
 
   const handleClick = (e) => {
-    
+
     let numberTyped = e.currentTarget.dataset.touche;
-    console.log(numberTyped)
-    let stringToTransform = tempScreen + numberTyped;
-    stringToTransform = stringToTransform.replace(checkStartDoubleZero, "0").replace(checkStartZeroThenNumber, numberTyped).replace(checkDecimal, "0.").replace(checkOpenParenthesis, "(").replace(checkMultiplySign, "*");
+    let tempResult =  result;
 
-
-     
-
-    
     if(Array.isArray(numberTyped.match(checkClear))){
       return clear();
-    }else if(
-      Array.isArray(numberTyped.match(checkSign))
-    ){
+    }
+
+    if(Array.isArray(result.match(/\./)) && numberTyped === "."){
+      return result
+    }
+
+    if(Array.isArray(numberTyped.match(checkEqual))){
+      return equal(numberTyped);
+    }
+
+    if(tempScreen.endsWith("-") && Array.isArray(numberTyped.match(checkMinusBefore))){
+      let temporaryTempScreen = tempScreen;
+      temporaryTempScreen = temporaryTempScreen.split('').splice(temporaryTempScreen.length-1, 1, numberTyped).join();
+      setTempScreen(temporaryTempScreen);
+      setElementBefore(numberTyped);
+      return setResult(numberTyped);
+    }
+
+
+
+
+
+    if(elementBefore === "="){
+      setTempScreen(tempResult+numberTyped);
+      setResult(numberTyped);
+      return setElementBefore(numberTyped);
       
-    }else if(Array.isArray(numberTyped.match(checkEqual))){
-      return equal(numberTyped)
+    }
+
+
+
+    
+    
+    let stringToTransform = result + numberTyped;
+    let stringToTransformTempScreen = tempScreen + numberTyped;
+    
+
+    stringToTransform = stringToTransform
+    .replace(checkStartDoubleZero, "0")
+    .replace(checkStartZeroThenNumber, numberTyped)
+    .replace(checkDecimal, "0.")
+    .replace(checkOpenParenthesis, "(")
+    .replace(checkSignWithoutMinus, "")
+    .replace(checkDoubleParenthesis, numberTyped)
+    .replace(checkMultiplySign, "*")
+    .replace(checkDoubleMinus, '-')
+    .replace(checkDoubleDecimal, ".")
+    ;
+
+    
+
+    stringToTransformTempScreen = stringToTransformTempScreen
+    .replace(checkStartDoubleZero, "0")
+    .replace(checkStartZeroThenNumber, numberTyped)
+    .replace(checkDecimal, "0.")
+    .replace(checkOpenParenthesis, "(")
+    .replace(checkEndSign, numberTyped)
+    .replace(checkBeforeOpenParenthesis, elementBefore+"*"+numberTyped)
+    .replace(checkAfterCloseParenthesis, elementBefore+"*"+numberTyped)
+    .replace(checkDoubleParenthesis, numberTyped)
+    .replace(checkMultiplySign, "*")
+    .replace(checkDoubleMinus, "-")
+    .replace(checkDoubleDecimal, ".")
+    ;
+
+
+
+    setTempScreen(stringToTransformTempScreen);
+    setElementBefore(numberTyped);
+    
+    
+    if(Array.isArray(stringToTransform.match(checkBeforeOpenParenthesis))|| Array.isArray(stringToTransform.match(checkAfterCloseParenthesis)) ||Array.isArray(numberTyped.match(checkSignToEquation))){
+      return equation(numberTyped);
     }else{
-      
+      setResult(stringToTransform);
     }
     
     
-    setTempScreen(stringToTransform);
-    return  setResult(result+numberTyped);
+    
     
     
     
