@@ -13,7 +13,7 @@ const Wrapper = ({buttons, handleClick, tempScreen, result}) => {
             }
             
             </div>
-            <div className="copyright"><h2>Made for FreeCodeCamp for the Front End Libraries section by <a href="https://github.com/AnthoVDO" target="_blank" className="copyright__name">AnthonVDO</a></h2></div>
+            <div className="copyright"><h2>Made for FreeCodeCamp for the Front End Libraries section by <a href="https://github.com/AnthoVDO" target="_blank" rel="noreferrer" className="copyright__name">AnthonVDO</a></h2></div>
         </div>
     );
 };
