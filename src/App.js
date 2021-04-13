@@ -34,7 +34,6 @@ function App() {
 
   const checkSignWithoutMinus = /\/|\+|x|X|\*/g;
   const checkSignToEquation = /\/|\+|-|x|X|\*|([\d]\()|(\)[\d])/g;
-  const checkEndSign = /(\/|\+|x|X|\*){2}/g;
   const checkDoubleMinus = /--/g;
   const checkDoubleDecimal = /\.\./g;
 
@@ -48,7 +47,10 @@ function App() {
   const checkBeforeOpenParenthesis = /[\d](\()/g;
   const checkAfterCloseParenthesis = /(\))[\d]/g;
   const checkDoubleParenthesis = /(\(){2}|(\)){2}/g;
-  const checkMinusBefore = /\+|x|X|\*|\//g;
+  const checkMinusBefore = /(-(\/|\+|-|x|\*|X))$|\+-|\/\/|\*\*/g;
+  const checkTripleSign = /((\*|X|x|\/)(-)(\*|X|x|\/|\+))/g;
+  const checkTwoFollowingSign = /(((\*|X|x|\/|\+)+)(\*|X|x|\/|\+))$/g;
+  const checkStartWithSign = /^(\/|\*|x|X|\+)/g;
 
   const clear = () => {
     setTempScreen("");
@@ -93,18 +95,6 @@ function App() {
       return equal(numberTyped);
     }
 
-    if(tempScreen.endsWith("-") && Array.isArray(numberTyped.match(checkMinusBefore))){
-      let temporaryTempScreen = tempScreen;
-      temporaryTempScreen = temporaryTempScreen.split('').splice(temporaryTempScreen.length-1, 1, numberTyped).join();
-      setTempScreen(temporaryTempScreen);
-      setElementBefore(numberTyped);
-      return setResult(numberTyped);
-    }
-
-
-
-
-
     if(elementBefore === "="){
       setTempScreen(tempResult+numberTyped);
       setResult(numberTyped);
@@ -127,9 +117,10 @@ function App() {
     .replace(checkOpenParenthesis, "(")
     .replace(checkSignWithoutMinus, "")
     .replace(checkDoubleParenthesis, numberTyped)
-    .replace(checkMultiplySign, "*")
     .replace(checkDoubleMinus, '-')
     .replace(checkDoubleDecimal, ".")
+    .replace(checkMinusBefore, numberTyped)
+    .replace(checkMultiplySign, "*")
     ;
 
     
@@ -139,13 +130,16 @@ function App() {
     .replace(checkStartZeroThenNumber, numberTyped)
     .replace(checkDecimal, "0.")
     .replace(checkOpenParenthesis, "(")
-    .replace(checkEndSign, numberTyped)
     .replace(checkBeforeOpenParenthesis, elementBefore+"*"+numberTyped)
     .replace(checkAfterCloseParenthesis, elementBefore+"*"+numberTyped)
     .replace(checkDoubleParenthesis, numberTyped)
-    .replace(checkMultiplySign, "*")
     .replace(checkDoubleMinus, "-")
     .replace(checkDoubleDecimal, ".")
+    .replace(checkMinusBefore, numberTyped)
+    .replace(checkTripleSign, numberTyped)
+    .replace(checkTwoFollowingSign, numberTyped)
+    .replace(checkStartWithSign,"0"+numberTyped)
+    .replace(checkMultiplySign, "*")
     ;
 
 

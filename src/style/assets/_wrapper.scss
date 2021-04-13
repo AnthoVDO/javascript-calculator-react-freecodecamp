@@ -1,5 +1,29 @@
 .wrapper {
-    height: 80%;
+    height: 85%;
     display: grid;
-    grid-template-rows: 1fr 1fr 60%;
+    grid-template-rows: 1fr 1fr 60% 10%;
+    max-width: 1000px;
+    background-color: $backgroundWrapper;
+    border-radius: 10px;
+    padding: 0 10px;
+    margin: 10px 10px 0px 10px;
+}
+
+h1 {
+    display: inline;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 5%;
+    color: $specialTouche;
+}
+
+.copyright {
+    text-align: center;
+    font-size: 0.6em;
+    padding: 4%;
+    color: $specialTouche;
+}
+
+.copyright__name {
+    color: $AC;
 }
